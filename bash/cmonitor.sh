@@ -28,11 +28,11 @@ echo "-> Command    : ${command}"
 
 submit_start () {
     task=$(curl -s -d "label=${label}&command=${command}" -X POST "${hostname}/task" \
-                | python -c "import sys, json; print json.load(sys.stdin)['id']")
+                | python -c "import sys, json; print (json.load(sys.stdin)['id'])")
     # for kill any active instances
     curl -s -d "task=${task}" -X POST "${hostname}/task/instance/kill"
     instance=$(curl -s -d "task=${task}" -X POST "${hostname}/task/instance" \
-                | python -c "import sys, json; print json.load(sys.stdin)['id']")
+                | python -c "import sys, json; print (json.load(sys.stdin)['id'])")
 }
 
 submit_end () {
