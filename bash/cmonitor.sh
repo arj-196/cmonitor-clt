@@ -3,11 +3,8 @@
 # Preparing arguments
 label=$1
 command=$2
-hostname="http://localhost:3000/api"
+hostname="http://arj-fut.com:3000/api"
 wait_interval=1
-
-PY_PARSE_JSON="python -c \"import sys, json; print json.load(sys.stdin)['"
-PY_PARSE_JSON_END="']\""
 
 echo "--------------------------------"
 echo "---    Monitoring Command    ---"
@@ -15,8 +12,8 @@ echo "--------------------------------"
 echo "-> Label      : ${label}"
 echo "-> Command    : ${command}"
 
-#read -r -p "Continue? [y/N] " response
-#case "$response" in
+# read -r -p "Continue? [y/N] " response
+# case "$response" in
 #    [yY][eE][sS]|[yY])
 #        break
 #        ;;
@@ -24,15 +21,15 @@ echo "-> Command    : ${command}"
 #        echo "--- Exiting ---"
 #        exit 1
 #        ;;
-#esac
+# esac
 
 submit_start () {
     task=$(curl -s -d "label=${label}&command=${command}" -X POST "${hostname}/task" \
-                | python -c "import sys, json; print (json.load(sys.stdin)['id'])")
+                | python -c "import sys, json; print (json.loads(sys.stdin.read())['id'])")
     # for kill any active instances
     curl -s -d "task=${task}" -X POST "${hostname}/task/instance/kill"
     instance=$(curl -s -d "task=${task}" -X POST "${hostname}/task/instance" \
-                | python -c "import sys, json; print (json.load(sys.stdin)['id'])")
+                | python -c "import sys, json; print (json.loads(sys.stdin.read())['id'])")
 }
 
 submit_end () {
